@@ -2,50 +2,62 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def index():
-    nome = "pedro"
-    return render_template('index.html', title = "pagina inicial - teste", nome=nome)
+    return render_template("index.html")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route("/cardapio")
+def cardapio():
+    return render_template("cardapio.html")
 
-@app.route('/contato')
-def contato():
-    return 'pagina de contato'
-    
-@app.route('/usuario')
-def usuario():
-    usuario = {'nome': 'alba', 'sobrenome': 'silva'}
-    return render_template('index.html', title = "pagina do inicial - teste", usuario=usuario)
+@app.route("/lanche/<nome>")
+def lanche(nome):
 
-@app.route('/dados', default='usuário comun')
-@app.route('/dados<nome>')
-def dados(nome):
-    return f'Olá, {nome}!'
+    nome = nome.lower()
 
-@app.route('/semestre/<int:x>')
-def semestre(x):
-    return 'Estamos no semestre ' + str(x)
+    if nome == "pizza":
+        mensagem = "Pizza quentinha saindo do forno!"
 
-@app.route('/pagamento/<float:valor>')
-def pagamento(valor):
-    return 'voce pagou: ' + str(valor)
+    elif nome == "hamburguer":
+        mensagem = "Hambúrguer artesanal especial!"
 
-@app.route('/somar', defaults={"n1": 0, "n2": 0})
-@app.route('/somar/<int:n1>/<int:n2>')
-def somar(n1, n2):
-    resultado = n1 + n2
-    return render_template('somar.html', n1=n1, n2=n2, resultado=resultado)
+    elif nome == "batata":
+        mensagem = "Batata frita crocante!"
 
-@app.route('/arearestrita/<int:id>')
-def arearestrita(id):
-    if id == 1:
-       return " Acesso bloqueado (cadeado fechado)"
+    elif nome == "milkshake":
+        mensagem = "Milkshake delicioso!"
+
     else:
-        return "Acesso permitido (cadeado aberto)"
+        mensagem = "Lanche não encontrado."
 
+    return render_template(
+        "lanche.html",
+        nome=nome,
+        mensagem=mensagem
+    )
 
-if __name__ == '__main__':
+@app.route("/pedidos")
+def pedidos():
+    return render_template("pedidos.html")
+
+@app.route("/cliente/<nome>/<cidade>")
+def cliente(nome,cidade):
+
+    if cidade.lower() == "natal":
+        entrega = "Entrega disponível!"
+    else:
+        entrega = "Entrega indisponível."
+
+    return render_template(
+        "cliente.html",
+        nome=nome,
+        cidade=cidade,
+        entrega=entrega
+    )
+
+@app.route("/contato")
+def contato():
+    return render_template("contato.html")
+
+if __name__ == "__main__":
     app.run(debug=True)
-    
